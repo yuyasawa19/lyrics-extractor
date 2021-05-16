@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>歌詞抽出サービス</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container">
+<h1 class="text-info">
+<br>歌詞抽出サービス</h1>
+<div class="col-md-8">
+  <br>
+  <p>歌詞検索サイト「<a href="https://www.uta-net.com/" target="_blank" rel="noopener noreferrer">Uta-Net</a>」の歌詞サイトURLを入力すると、歌詞を抽出します。</p>
+</div>
+&nbsp;
+  <div class="form-group">
+    <div class="row">
+      <div class="col-md-8">
+        <input class="form-control" type="text" id="url" name="url" placeholder="ここにURLを入力してください" required>
+      </div>
+    </div>
+  </div>
+  &nbsp;
+  <button class="btn btn-info" id="button1">歌詞を抽出</button>
+  <div></div>
+  &nbsp;
+    <font color="696969" size=3><div id="song-name" >　曲名</div></font>
+    <div class="col-md-8">
+      <div class="form-group">
+        <textarea class="form-control" id="song-name-area" rows="1" readonly></textarea>
+      </div>
+    </div>
+    <font color="696969" size=3><div id="lyrics" >　歌詞</div></font>
+    <div class="col-md-8">
+      <div class="form-group">
+        <textarea class="form-control" id="lyrics-area" rows="10" readonly></textarea>
+      </div>
+    </div>
+  &nbsp;
+  <button onclick="copyToClipboard()" class="btn btn-info" id="button2">歌詞をコピーする</button>
+  &nbsp;
+  <div></div>
+  &nbsp;
+
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js"></script>
+
+  <script type="text/javascript">
+
+  $(function(){
+    $("#button1").on("click", function(){
+      var textData = JSON.stringify({"url":$("#url").val()});
+      $.ajax({
+        type:"POST",
+        url:"/output",
+        data:textData,
+        contentType:"application/json",
+        success:function(data){
+          var song_info = JSON.parse(data.ResultSet);
+          var song_name = song_info.song_name;
+          var lyrics = song_info.lyrics;
+          $("#song-name-area").text(song_name);
+          $("#lyrics-area").text(lyrics);
+        }
+      });
+     });
+   });
+
+   function copyToClipboard() {
+      var copyTarget = document.getElementById("lyrics-area");
+      copyTarget.select();
+      document.execCommand("Copy");
+      alert("クリップボードに歌詞をコピーしました！");
+  }
+
+  </script>
+
+</body>
+</html>
